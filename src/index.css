@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --transition-time: 0.3s;
+}
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+canvas {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+}
+
+#root {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    z-index: 5;
+}
+
+.share,
+.fab {
+    cursor: pointer;
+}
+
+.share {
+    position: relative;
+}
+
+.share-hide {
+    animation: 1.2s bounceOut forwards;
+    z-index: -5;
+}
+.share-hide-icon {
+    animation: 5s zoomOut forwards;
+    animation-delay: 0.2s;
+}
+
+.fab {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-time);
+    animation: var(--transition-time) down forwards;
+    position: absolute !important;
+    will-change: animation;
+    display: block;
+    opacity: 0;
+    z-index: -1;
+}
+
+.fab-icon {
+    transition: opacity var(--transition-time);
+}
+
+.fab:nth-child(2) {
+    top: 100%;
+    right: 0;
+}
+
+.fab:nth-child(3) {
+    top: -120%;
+    right: 100%;
+}
+
+.fab:nth-child(4) {
+    top: -120%;
+    right: -200%;
+}
+
+.fab-up.active {
+    animation: calc(var(--transition-time) * 1.6) up forwards;
+}
+
+.fab-upside.active {
+    animation: calc(var(--transition-time) * 1.6) upside forwards;
+}
+
+.fab.active:nth-child(3) {
+    animation-delay: calc(var(--transition-time) * 2);
+}
+
+.fab.active:nth-child(2) {
+    animation-delay: calc(var(--transition-time) / 1.2);
+}
+
+.fab.no {
+    animation: none;
+}
+
+@keyframes up {
+    50% {
+        transform: translateY(-170%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(-130%);
+    }
+}
+@keyframes upside {
+    50% {
+        transform: translateY(170%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(130%);
+    }
+}
+
+@keyframes down {
+    0% {
+        opacity: 1;
+        transform: translateY(-130%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(0);
+        top: 0;
+    }
+}
