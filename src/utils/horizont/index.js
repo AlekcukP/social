@@ -3,68 +3,59 @@ import Particle from './particle';
 import Vector from './vector';
 import { random } from 'lodash';
 
-let w = innerWidth * devicePixelRatio;
-let h = innerHeight * devicePixelRatio;
-let noise;
-let particles;
-let rid;
-
-const canvasEl = document.createElement('canvas');
+const canvasEl = document.getElementById('horizont');
 const canvasContext = canvasEl.getContext('2d');
+const width = (canvasEl.width = innerWidth * devicePixelRatio);
+const height = (canvasEl.height = innerHeight * devicePixelRatio);
 
-canvasEl.width = w;
-canvasEl.height = h;
+let particles = [];
+let noise;
+let frameId;
 
-document.body.appendChild(canvasEl);
-canvasEl.addEventListener('mousedown', generate);
-canvasEl.addEventListener('touchstart', generate);
+const createNoise = () => (noise = new Noise(width, height, 8));
 
-function init() {
-    noise = new Noise(w, h, 8);
-    particles = [];
-
+const generateParticles = () => {
     for (let i = 0; i < 10000; i++) {
-        let r1 = w / 4;
-        let a1 = random(0, 2 * Math.PI, true);
-        let r2 = random(0, 1, true);
-        let a2 = random(0, 2 * Math.PI, true);
+        const r1 = width / 4;
+        const r2 = random(0, 1, true);
+        const a1 = random(0, 2 * Math.PI, true);
+        const a2 = random(0, 2 * Math.PI, true);
 
-        let pos = Vector.fromPolar(r1, a1),
-            vel = Vector.fromPolar(r2, a2);
+        const pos = Vector.fromPolar(r1, a1);
+        const vel = Vector.fromPolar(r2, a2);
 
-        pos.add(new Vector(w / 2, h / 2));
+        pos.add(new Vector(width / 2, height / 2));
         particles.push(new Particle(pos.x, pos.y, vel.x, vel.y));
     }
+};
 
-    canvasContext.fillStyle = '#000';
-    canvasContext.fillRect(0, 0, w, h);
+const fillCanvas = () => {
+    canvasContext.fillStyle = Noise.FILL_STYLE;
+    canvasContext.fillRect(0, 0, width, height);
     canvasContext.fillStyle = 'rgba(255, 255, 255, 0.05)';
+};
 
-    animate();
-}
+const stopHoriont = () => {
+    window.cancelAnimationFrame(frameId);
+    frameId = 0;
+};
 
-function generate() {
-    if (rid) {
-        window.cancelAnimationFrame(rid);
-        rid = 0;
-        return null;
-    }
+const createHorizont = () => {
+    particles.forEach((particle) => {
+        particle.update(noise);
+        particle.draw(canvasContext);
+    });
 
-    return init();
-}
+    frameId = window.requestAnimationFrame(createHorizont);
+};
 
-function render() {
-    for (let p of particles) {
-        p.update(noise);
-        p.draw(canvasContext);
-    }
-}
+const renderHorizont = () => {
+    if (frameId) return stopHoriont();
 
-function animate() {
-    render();
-    rid = window.requestAnimationFrame(animate);
-}
+    createNoise();
+    generateParticles();
+    fillCanvas();
+    createHorizont();
+};
 
-init();
-
-export default generate;
+export default renderHorizont;

@@ -1,24 +1,25 @@
 import { random } from 'lodash';
 
 class Noise {
-    constructor(w, h, oct) {
-        this.width = w;
-        this.height = h;
-        this.octaves = oct;
-        this.canvas = Noise.compositeNoise(w, h, oct);
-        let ctx = this.canvas.getContext('2d');
-        this.data = ctx.getImageData(0, 0, w, h).data;
+    static FILL_STYLE = '#000';
+    static OPERATION = 'lighter';
+
+    constructor(width, height, octaves) {
+        this.width = width;
+        this.height = height;
+        this.octaves = octaves;
+        this.canvas = Noise.compositeNoise(width, height, octaves);
+        this.data = this.getContextData();
     }
 
-    static noise(w, h) {
-        let cv = document.createElement('canvas'),
-            ctx = cv.getContext('2d');
+    static noise(width, height) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const img = context.getImageData(0, 0, width, height);
+        const data = img.data;
 
-        cv.width = w;
-        cv.height = h;
-
-        let img = ctx.getImageData(0, 0, w, h),
-            data = img.data;
+        canvas.width = width;
+        canvas.height = height;
 
         for (let i = 0, l = data.length; i < l; i += 4) {
             data[i + 0] = random(0, 255);
@@ -27,35 +28,42 @@ class Noise {
             data[i + 3] = 255;
         }
 
-        ctx.putImageData(img, 0, 0);
-        return cv;
+        context.putImageData(img, 0, 0);
+        return canvas;
     }
 
     // create composite noise with multiple octaves
-    static compositeNoise(w, h, oct) {
-        let cv = document.createElement('canvas'),
-            ctx = cv.getContext('2d');
+    static compositeNoise(width, height, octaves) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
 
-        cv.width = w;
-        cv.height = h;
+        canvas.width = width;
+        canvas.height = height;
 
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, w, h);
+        context.fillStyle = Noise.FILL_STYLE;
+        context.fillRect(0, 0, width, height);
+        context.globalCompositeOperation = Noise.OPERATION;
+        context.globalAlpha = 1 / octaves;
 
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.globalAlpha = 1 / oct;
-
-        for (let i = 0; i < oct; i++) {
-            let noise = Noise.noise(w >> i, h >> i);
-            ctx.drawImage(noise, 0, 0, w, h);
+        for (let i = 0; i < octaves; i++) {
+            const noise = Noise.noise(width >> i, height >> i);
+            context.drawImage(noise, 0, 0, width, height);
         }
 
-        return cv;
+        return canvas;
+    }
+
+    getContextData() {
+        return this.canvas.getContext('2d').getImageData(0, 0, this.width, this.height).data;
+    }
+
+    getContext() {
+        return this.canvas.getContext('2d');
     }
 
     getNoise(x, y, ch) {
-        let i = (~~x + ~~y * this.width) * 4;
-        return this.data[i + ch] / 127 - 1;
+        const index = (~~x + ~~y * this.width) * 4 + ch;
+        return this.data[index] / 126 - 1;
     }
 }
 

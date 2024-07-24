@@ -8,36 +8,37 @@ class Vector {
         return new Vector(r * Math.cos(t), r * Math.sin(t));
     }
 
-    add(v) {
-        this.x += v.x;
-        this.y += v.y;
+    add(vector) {
+        this.x += vector.x;
+        this.y += vector.y;
         return this;
     }
 
-    mul(x) {
-        this.x *= x;
-        this.y *= x;
+    mul(value) {
+        this.x *= value;
+        this.y *= value;
         return this;
     }
 
-    dist(v) {
-        let dx, dy;
-        return Math.sqrt((dx = this.x - v.x) * dx, (dy = this.y - v.y) * dy);
+    dist(vector) {
+        const dx = this.x - vector.x;
+        const dy = this.y - vector.y;
+        return Math.sqrt(dx * dx, dy * dy);
+    }
+
+    make() {
+        const mag = this.mag;
+        return new Vector(this.x / mag, this.y / mag);
     }
 
     get mag() {
         return Math.sqrt(this.x * this.x, this.y * this.y);
     }
 
-    set mag(v) {
-        let n = this.norm();
-        this.x = n.x * v;
-        this.y = n.y * v;
-    }
-
-    norm() {
-        let mag = this.mag;
-        return new Vector(this.x / mag, this.y / mag);
+    set mag(value) {
+        const vector = this.make();
+        this.x = vector.x * value;
+        this.y = vector.y * value;
     }
 }
 

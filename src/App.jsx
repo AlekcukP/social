@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import classnames from 'tailwindcss-classnames';
 import Share from './components/Share';
 import Social from './components/Social';
-import generate from './utils/horizont';
 import config from './config';
+
+import './css/index.css';
+
+import 'animate.css';
+
+import 'react-social-icons/github';
+import 'react-social-icons/instagram';
+import 'react-social-icons/linkedin';
 
 function App() {
     const [active, setActive] = useState(false);
-
-    useEffect(() => {
-        generate();
-    }, []);
 
     return (
         <>
