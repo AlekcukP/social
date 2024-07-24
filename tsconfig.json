@@ -3,7 +3,7 @@
         "sourceMap": true,
         "outDir": "dist",
         "strict": true,
-        "lib": ["esnext"],
+        "lib": ["esnext", "dom", "dom.iterable"],
         "esModuleInterop": true,
         "target": "es5",
         "allowJs": true,
@@ -11,11 +11,14 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "module": "esnext",
+        "incremental": true,
+        "allowSyntheticDefaultImports": true,
+        "noFallthroughCasesInSwitch": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "jsx": "preserve",
-        "incremental": true
+        "declaration": true,
+        "jsx": "react-jsx"
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/**/*.js", "**/**/*.jsx"],
     "exclude": ["node_modules"]
