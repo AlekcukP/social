@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Redirect all requests to the index page
+RewriteCond %{REQUEST_URI} !^/index.html$
+RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|eot|ttf|otf)$ [NC]
+RewriteRule ^(.*)$ /index.html [L]
